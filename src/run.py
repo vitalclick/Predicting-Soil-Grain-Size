@@ -140,6 +140,7 @@ def main():
     ap.add_argument("--n-aug", type=int, default=8)
     ap.add_argument("--range-margin", type=float, default=None,
                     help="drop features whose test values leave the train range by more than this fraction")
+    ap.add_argument("--clip-z", type=float, default=3.5, help="winsorisation of standardised features (0 = off)")
     ap.add_argument("--linear-only", action="store_true", help="PLS-1 components only (extrapolating)")
     ap.add_argument("--cv-only", action="store_true")
     ap.add_argument("--no-cv", action="store_true")
@@ -154,8 +155,9 @@ def main():
     Y = pd.read_csv(f"{root}/Training_labels_updated.csv", index_col=0)[gsd.COLS]
     Ylq = pd.DataFrame(gsd.curve_to_logq(Y.values), index=Y.index)
     cols = [c for c in F.columns if c not in META]
-    global RANGE_MARGIN, RANGE_F, LINEAR_ONLY
+    global RANGE_MARGIN, RANGE_F, LINEAR_ONLY, CLIP_Z
     RANGE_MARGIN, RANGE_F, LINEAR_ONLY = a.range_margin, F, a.linear_only
+    CLIP_Z = a.clip_z if a.clip_z > 0 else np.inf
 
     if not a.no_cv:
         res = loso(F, Y, Ylq, cols)
