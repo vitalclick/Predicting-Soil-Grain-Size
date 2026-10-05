@@ -19,7 +19,19 @@ from features import extract_all
 
 warnings.filterwarnings("ignore")
 META = ["file", "split", "sample_id", "phone", "eff_ppm", "aug"]
+RANGE_MARGIN, RANGE_F = None, None  # set from --range-margin
 CLIP_Z = 3.5  # winsorise standardised features: no wild extrapolation on out-of-range test photos
+
+
+def range_filter(F, cols, margin):
+    """Keep features whose every TEST-sample mean lies within the training-sample range (+ margin x
+    range). Uses unlabeled test photos only (covariate-shift check), no labels."""
+    tr = F[(F.split == "train") & (F.aug == 0)].groupby("sample_id")[cols].mean()
+    te = F[F.split == "test"].groupby("sample_id")[cols].mean()
+    lo, hi = tr.min(), tr.max()
+    rg = hi - lo
+    ok = ((te >= lo - margin * rg) & (te <= hi + margin * rg)).all()
+    return [c for c in cols if ok[c]]
 
 
 def feature_sets(cols):
@@ -82,6 +94,8 @@ class Component:
 
 def build_components(cols):
     fs = feature_sets(cols)
+    if RANGE_MARGIN is not None:
+        fs = {k: range_filter(RANGE_F, v, RANGE_MARGIN) for k, v in fs.items()}
     comps = []
     for name, c in fs.items():
         # (ridge variants were tried: weakest in CV and sensitive to alpha, so not in the ensemble)
@@ -121,6 +135,8 @@ def main():
     ap.add_argument("--features", default=os.path.join(os.path.dirname(__file__), "..", "cache", "features.csv"))
     ap.add_argument("--out", default="submission.csv")
     ap.add_argument("--n-aug", type=int, default=8)
+    ap.add_argument("--range-margin", type=float, default=None,
+                    help="drop features whose test values leave the train range by more than this fraction")
     ap.add_argument("--cv-only", action="store_true")
     ap.add_argument("--no-cv", action="store_true")
     a = ap.parse_args()
@@ -134,6 +150,8 @@ def main():
     Y = pd.read_csv(f"{root}/Training_labels_updated.csv", index_col=0)[gsd.COLS]
     Ylq = pd.DataFrame(gsd.curve_to_logq(Y.values), index=Y.index)
     cols = [c for c in F.columns if c not in META]
+    global RANGE_MARGIN, RANGE_F
+    RANGE_MARGIN, RANGE_F = a.range_margin, F
 
     if not a.no_cv:
         res = loso(F, Y, Ylq, cols)

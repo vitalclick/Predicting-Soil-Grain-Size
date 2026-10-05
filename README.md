@@ -92,6 +92,17 @@ rm ../cache/features.csv && python run.py        # re-extract features (~6 min o
 On Kaggle, attach the competition data and run `run.py --root /kaggle/input/soil-grain-size-from-photos`
 (CPU only; no internet or pretrained weights needed).
 
+## Submission log
+
+| # | file | change | LOSO EMD | public LB |
+|---|---|---|---|---|
+| 1 | `submission.csv` | ensemble as described above | 35.9 | 55.19 |
+| 2 | `submission_v2.csv` | `python run.py --range-margin 0.25`: only features whose test-sample values stay within the train range (+25 %) | 35.9 | _pending_ |
+
+v1 scored far worse than CV (camera/site shift). v2 tests the hypothesis that shifted features are the cause. Side
+effect to watch: the filter removes coarse-scale features, so the coarse Münster sample is predicted finer than in v1
+(EMD v1↔v2 = 33 on that sample, 15 on Audorfring, 11 on Lidl; ≤6 elsewhere).
+
 ## Ideas not yet tried
 
 * Pretrained embeddings (DINOv2 / ConvNeXt) as extra latent features – public notebooks with them score ~35–41 OOF, no
