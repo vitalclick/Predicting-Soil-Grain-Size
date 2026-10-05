@@ -98,7 +98,8 @@ On Kaggle, attach the competition data and run `run.py --root /kaggle/input/soil
 |---|---|---|---|---|
 | 1 | `submission.csv` | ensemble as described above | 35.9 | 55.19 |
 | 2 | `submission_v2.csv` | `python run.py --range-margin 0.25`: only features whose test-sample values stay within the train range (+25 %) | 35.9 | 61.09 (worse) |
-| 3 | `submission_v3.csv` | `python run.py --linear-only`: v1 without the kNN-median parts, which cannot predict coarser than the coarsest training soil | 38.8 | _pending_ |
+| 3 | `submission_v3.csv` | `python run.py --linear-only`: v1 without the kNN-median parts, which cannot predict coarser than the coarsest training soil | 38.8 | **40.90** (best) |
+| 4 | `submission_v4.csv` | `python run.py --linear-only --clip-z 0`: v3 without the ±3.5σ feature clipping; only Münster changes (D50 12.5 → 18 mm; Kleinkummerfeld 2-2 moves 0.6) | 38.8 | _pending_ |
 
 v1 scored far worse than CV (camera/site shift). v2 tested the hypothesis that shifted features are the cause: it
 scored **worse** (61.09 vs 55.19), so range-filtering hurt. Side effect that likely explains it: the filter removes coarse-scale features, so the coarse Münster sample is predicted finer than in v1
