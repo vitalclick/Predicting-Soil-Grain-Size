@@ -141,6 +141,9 @@ def main():
     ap.add_argument("--range-margin", type=float, default=None,
                     help="drop features whose test values leave the train range by more than this fraction")
     ap.add_argument("--clip-z", type=float, default=3.5, help="winsorisation of standardised features (0 = off)")
+    ap.add_argument("--shift-log10", type=float, default=0.0,
+                    help="add a constant to every predicted log10 quantile (>0 = coarser). Leaderboard-informed "
+                         "calibration for the Android->iPhone/site shift; NOT validated by CV")
     ap.add_argument("--linear-only", action="store_true", help="PLS-1 components only (extrapolating)")
     ap.add_argument("--cv-only", action="store_true")
     ap.add_argument("--no-cv", action="store_true")
@@ -169,6 +172,8 @@ def main():
         return
     tr, te = F[F.split == "train"], F[F.split == "test"]
     idx, comp_c, ens = fit_predict(tr, te, Ylq, cols)
+    if a.shift_log10:
+        ens = gsd.logq_to_curve(gsd.curve_to_logq(ens) + a.shift_log10)
     sub = pd.DataFrame(ens, index=idx, columns=gsd.COLS).round(4)
     tmpl = pd.read_csv(f"{root}/sample_submission.csv")
     sub = sub.loc[tmpl.sample_id].reset_index().rename(columns={"index": "sample_id", "sample_id": "sample_id"})
