@@ -20,6 +20,7 @@ from features import extract_all
 warnings.filterwarnings("ignore")
 META = ["file", "split", "sample_id", "phone", "eff_ppm", "aug"]
 RANGE_MARGIN, RANGE_F = None, None  # set from --range-margin
+LINEAR_ONLY = False  # set from --linear-only: drop kNN-median parts (they cannot extrapolate past the coarsest train soil)
 CLIP_Z = 3.5  # winsorise standardised features: no wild extrapolation on out-of-range test photos
 
 
@@ -99,7 +100,9 @@ def build_components(cols):
     comps = []
     for name, c in fs.items():
         # (ridge variants were tried: weakest in CV and sensitive to alpha, so not in the ensemble)
-        comps += [(f"{name}-pls1", Component(c, "pls")), (f"{name}-knn", Component(c, "knn"))]
+        comps += [(f"{name}-pls1", Component(c, "pls"))]
+        if not LINEAR_ONLY:
+            comps += [(f"{name}-knn", Component(c, "knn"))]
     return comps
 
 
@@ -137,6 +140,7 @@ def main():
     ap.add_argument("--n-aug", type=int, default=8)
     ap.add_argument("--range-margin", type=float, default=None,
                     help="drop features whose test values leave the train range by more than this fraction")
+    ap.add_argument("--linear-only", action="store_true", help="PLS-1 components only (extrapolating)")
     ap.add_argument("--cv-only", action="store_true")
     ap.add_argument("--no-cv", action="store_true")
     a = ap.parse_args()
@@ -150,8 +154,8 @@ def main():
     Y = pd.read_csv(f"{root}/Training_labels_updated.csv", index_col=0)[gsd.COLS]
     Ylq = pd.DataFrame(gsd.curve_to_logq(Y.values), index=Y.index)
     cols = [c for c in F.columns if c not in META]
-    global RANGE_MARGIN, RANGE_F
-    RANGE_MARGIN, RANGE_F = a.range_margin, F
+    global RANGE_MARGIN, RANGE_F, LINEAR_ONLY
+    RANGE_MARGIN, RANGE_F, LINEAR_ONLY = a.range_margin, F, a.linear_only
 
     if not a.no_cv:
         res = loso(F, Y, Ylq, cols)
