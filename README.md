@@ -100,13 +100,16 @@ On Kaggle, attach the competition data and run `run.py --root /kaggle/input/soil
 | 2 | `submission_v2.csv` | `python run.py --range-margin 0.25`: only features whose test-sample values stay within the train range (+25 %) | 35.9 | 61.09 (worse) |
 | 3 | `submission_v3.csv` | `python run.py --linear-only`: v1 without the kNN-median parts, which cannot predict coarser than the coarsest training soil | 38.8 | **40.90** (best) |
 | 4 | `submission_v4.csv` | `python run.py --linear-only --clip-z 0`: v3 without the ±3.5σ feature clipping; only Münster changes (D50 12.5 → 18 mm; Kleinkummerfeld 2-2 moves 0.6) | 38.8 | **38.75** |
-| 5 | `submission_v5.csv` | `python run.py --linear-only --clip-z 0 --shift-log10 0.15`: v4 with every predicted size ×1.41 (log10 +0.15). Leaderboard-informed calibration, not CV-validated | 38.8 (unshifted) | _pending_ |
+| 5 | `submission_v5.csv` | `python run.py --linear-only --clip-z 0 --shift-log10 0.15`: v4 with every predicted size ×1.41 (log10 +0.15). Leaderboard-informed calibration, not CV-validated | 38.8 (unshifted) | **35.33** |
+| 6 | `submission_v6.csv` | `--shift-log10 0.25`: does a stronger uniform shift keep helping? | – | _pending_ |
+| 7 | `submission_v7.csv` | `--shift-log10 0.25 --shift-coarse 0.15`: +0.25 only for sandy samples, Münster/Lidl stay at v5 | – | _pending_ |
+| 8 | `submission_v8.csv` | `--shift-log10 0.15 --shift-fines 0.2`: v5 + fewer fines (extra shift ramping in below the median) | – | _pending_ |
 
 **What the leaderboard told us (v1–v4).** Coarser moves helped every time (v3, v4) and the one finer move hurt (v2).
 From v1→v3 (LB gain 14.3 vs per-sample moves of 5–22) the public split holds at most 6 of the 10 samples, and the
 coarser moves paid off almost in full there, so truth is at least as coarse as v3. The Android-trained model
 systematically under-predicts grain size on the iPhone/field test photos. v5 adds a uniform +0.15 log10 shift
-(~15 EMD per sample, the same size as the moves that already paid off). Final selection: **v4 (safe) + v5 (bet)**.
+(~15 EMD per sample, the same size as the moves that already paid off). v5 confirmed it (35.33), but the gain was only ~23 % of the move, so the optimum is close. v6–v8 bracket it.
 
 v1 scored far worse than CV (camera/site shift). v2 tested the hypothesis that shifted features are the cause: it
 scored **worse** (61.09 vs 55.19), so range-filtering hurt. Side effect that likely explains it: the filter removes coarse-scale features, so the coarse Münster sample is predicted finer than in v1
