@@ -101,9 +101,15 @@ On Kaggle, attach the competition data and run `run.py --root /kaggle/input/soil
 | 3 | `submission_v3.csv` | `python run.py --linear-only`: v1 without the kNN-median parts, which cannot predict coarser than the coarsest training soil | 38.8 | **40.90** (best) |
 | 4 | `submission_v4.csv` | `python run.py --linear-only --clip-z 0`: v3 without the ±3.5σ feature clipping; only Münster changes (D50 12.5 → 18 mm; Kleinkummerfeld 2-2 moves 0.6) | 38.8 | **38.75** |
 | 5 | `submission_v5.csv` | `python run.py --linear-only --clip-z 0 --shift-log10 0.15`: v4 with every predicted size ×1.41 (log10 +0.15). Leaderboard-informed calibration, not CV-validated | 38.8 (unshifted) | **35.33** |
-| 6 | `submission_v6.csv` | `--shift-log10 0.25`: does a stronger uniform shift keep helping? | – | _pending_ |
-| 7 | `submission_v7.csv` | `--shift-log10 0.25 --shift-coarse 0.15`: +0.25 only for sandy samples, Münster/Lidl stay at v5 | – | _pending_ |
-| 8 | `submission_v8.csv` | `--shift-log10 0.15 --shift-fines 0.2`: v5 + fewer fines (extra shift ramping in below the median) | – | _pending_ |
+| 6 | `submission_v6.csv` | `--shift-log10 0.25`: does a stronger uniform shift keep helping? | – | 35.53 |
+| 7 | `submission_v7.csv` | `--shift-log10 0.25 --shift-coarse 0.15`: +0.25 only for sandy samples, Münster/Lidl stay at v5 | – | 36.32 |
+| 8 | `submission_v8.csv` | `--shift-log10 0.15 --shift-fines 0.2`: v5 + fewer fines (extra shift ramping in below the median) | – | _not yet submitted_ |
+| 9 | `submission_v9.csv` | `--shift-log10 0.15 --shift-coarse 0.25`: sandy rows = v5, Münster/Lidl rows = v6 | – | expected **34.54** |
+| 10 | `submission_v10.csv` | `--shift-log10 0.15 --shift-coarse 0.35`: Münster/Lidl pushed one step further | – | _pending_ |
+
+**Per-sample additivity.** The score is a mean of independent per-sample EMDs, so for submissions that differ only by
+group, scores combine exactly: sandy(+0.25) − sandy(+0.15) = v7 − v5 = +0.99 (worse), coarse(+0.25) − coarse(+0.15)
+= v6 − v7 = −0.79 (better). Hence v9 = v5 + v6 − v7 = 34.54 without guessing.
 
 **What the leaderboard told us (v1–v4).** Coarser moves helped every time (v3, v4) and the one finer move hurt (v2).
 From v1→v3 (LB gain 14.3 vs per-sample moves of 5–22) the public split holds at most 6 of the 10 samples, and the
