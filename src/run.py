@@ -146,6 +146,7 @@ def main():
                          "calibration for the Android->iPhone/site shift; NOT validated by CV")
     ap.add_argument("--shift-coarse", type=float, default=None, help="shift for samples with predicted D50 > 1 mm")
     ap.add_argument("--shift-fines", type=float, default=0.0, help="extra coarsening of the fine tail (p<50)")
+    ap.add_argument("--shift-fines-coarse", type=float, default=None, help="fine-tail shift for D50 > 1 mm samples")
     ap.add_argument("--linear-only", action="store_true", help="PLS-1 components only (extrapolating)")
     ap.add_argument("--cv-only", action="store_true")
     ap.add_argument("--no-cv", action="store_true")
@@ -180,8 +181,11 @@ def main():
         if a.shift_coarse is not None:  # separate shift for samples predicted gravelly (D50 > 1 mm)
             shift[lq[:, 50] > 0.0] = a.shift_coarse
         # extra shift on the fine tail, ramping from +shift_fines at p=0 to 0 at p=50
-        ramp = np.clip((50 - gsd.P_GRID) / 50, 0, 1) * a.shift_fines
-        ens = gsd.logq_to_curve(lq + shift[:, None] + ramp[None, :])
+        fines = np.full(len(lq), a.shift_fines)
+        if a.shift_fines_coarse is not None:
+            fines[lq[:, 50] > 0.0] = a.shift_fines_coarse
+        ramp = np.clip((50 - gsd.P_GRID) / 50, 0, 1)
+        ens = gsd.logq_to_curve(lq + shift[:, None] + fines[:, None] * ramp[None, :])
     sub = pd.DataFrame(ens, index=idx, columns=gsd.COLS).round(4)
     tmpl = pd.read_csv(f"{root}/sample_submission.csv")
     sub = sub.loc[tmpl.sample_id].reset_index().rename(columns={"index": "sample_id", "sample_id": "sample_id"})
