@@ -103,9 +103,16 @@ On Kaggle, attach the competition data and run `run.py --root /kaggle/input/soil
 | 5 | `submission_v5.csv` | `python run.py --linear-only --clip-z 0 --shift-log10 0.15`: v4 with every predicted size ×1.41 (log10 +0.15). Leaderboard-informed calibration, not CV-validated | 38.8 (unshifted) | **35.33** |
 | 6 | `submission_v6.csv` | `--shift-log10 0.25`: does a stronger uniform shift keep helping? | – | 35.53 |
 | 7 | `submission_v7.csv` | `--shift-log10 0.25 --shift-coarse 0.15`: +0.25 only for sandy samples, Münster/Lidl stay at v5 | – | 36.32 |
-| 8 | `submission_v8.csv` | `--shift-log10 0.15 --shift-fines 0.2`: v5 + fewer fines (extra shift ramping in below the median) | – | _not yet submitted_ |
-| 9 | `submission_v9.csv` | `--shift-log10 0.15 --shift-coarse 0.25`: sandy rows = v5, Münster/Lidl rows = v6 | – | expected **34.54** |
-| 10 | `submission_v10.csv` | `--shift-log10 0.15 --shift-coarse 0.35`: Münster/Lidl pushed one step further | – | _pending_ |
+| 8 | `submission_v8.csv` | `--shift-log10 0.15 --shift-fines 0.2`: v5 + fewer fines (extra shift ramping in below the median) | – | **32.50** |
+| 9 | `submission_v9.csv` | `--shift-log10 0.15 --shift-coarse 0.25`: sandy rows = v5, Münster/Lidl rows = v6 | – | **34.54** (as predicted) |
+| 10 | `submission_v10.csv` | `--shift-log10 0.15 --shift-coarse 0.35`: Münster/Lidl pushed one step further | – | **33.76** |
+| 11 | `submission_v11.csv` | `--shift-log10 0.15 --shift-coarse 0.35 --shift-fines 0.2 --shift-fines-coarse 0`: sandy rows = v8, Münster/Lidl rows = v10 | – | expected ≈ 30.9 − f_c |
+| 12 | `submission_v12.csv` | v11 with sandy fines shift 0.35 (sandy rows only change) | – | _pending_ |
+| 13 | `submission_v13.csv` | v11 with Münster/Lidl +0.45 (coarse rows only change) | – | _pending_ |
+
+Group effects measured so far (public split, exact by additivity): Münster/Lidl +0.15→+0.25: −0.79, +0.25→+0.35: −0.78;
+sandy +0.15→+0.25: +0.99; fines-tail 0.2 on all samples: −2.83 (= sandy part f_s + coarse part f_c, not yet separated;
+v11 − (v5 + v10 − v9 ... ) separates it: f_c = 30.93 − v11).
 
 **Per-sample additivity.** The score is a mean of independent per-sample EMDs, so for submissions that differ only by
 group, scores combine exactly: sandy(+0.25) − sandy(+0.15) = v7 − v5 = +0.99 (worse), coarse(+0.25) − coarse(+0.15)
