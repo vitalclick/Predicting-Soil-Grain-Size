@@ -4,6 +4,23 @@ Solution workspace for the Kaggle community competition
 [Predicting Soil Grain Size Distributions from Images](https://www.kaggle.com/competitions/soil-grain-size-from-photos)
 (host: Lukas Leibold, Geotechnical Resilience project / BOKU; $500 prize pool; no points/medals).
 
+## Repository layout
+
+```
+├── src/                     pipeline code
+│   ├── gsd.py               metric, curve <-> log-quantile transforms, data discovery
+│   ├── features.py          physical-scale image features + camera augmentations
+│   ├── run.py               leave-one-sample-out CV and submission writer
+│   └── experiments.py       CV harness used for feature/target comparisons
+├── data/                    competition data (Kaggle layout)
+├── cache/features.csv       pre-computed features (skip the ~6 min extraction)
+├── submissions/             submission files v1 ... v16, see the log below
+├── notebooks/reference/     public Kaggle notebooks reviewed during the analysis
+├── docs/competition/        competition overview, data description, rules, leaderboard snapshot
+├── requirements.txt
+└── README.md
+```
+
 ## Task
 
 Given phone photographs of a soil surface, predict the **cumulative grain-size distribution** (percent of
@@ -18,7 +35,7 @@ mass finer than d) at the 11 DIN EN ISO 14688-1 diameters
   last column (200 mm) exactly 100. Invalid files are rejected.
 * **Rules worth remembering** – no hand-labelling / human prediction of test data; one Kaggle account per person.
 
-## Data (`soil-grain-size-from-photos/`)
+## Data (`data/`)
 
 | file | content |
 |---|---|
@@ -28,8 +45,7 @@ mass finer than d) at the 11 DIN EN ISO 14688-1 diameters
 | `ppm_updated.csv` | pixels-per-mm per camera **at original sensor resolution** |
 | `sample_submission.csv` | the 10 test IDs, e.g. `HPC_Airbus BS6-3`, `HPC_Muenster_BS6_9_0-10m` |
 
-Other files in the repo: `Overview.pdf`, `data.pdf`, `Competition Rules.htm` (screenshots/copies of the competition
-pages), `codes/` (20 public notebooks used as reference), the public-leaderboard export.
+`data/` mirrors the Kaggle dataset layout (`/kaggle/input/soil-grain-size-from-photos`), so the same code runs locally and on Kaggle.
 
 ### Findings that shape the solution
 
@@ -86,17 +102,22 @@ set is uncertain** – the CV cannot measure the iPhone shift.
 ```bash
 pip install -r requirements.txt
 cd src
-python run.py --out ../submission.csv           # uses ../cache/features.csv (committed)
+python run.py                                    # CV + submissions/submission.csv, uses ../cache/features.csv
 rm ../cache/features.csv && python run.py        # re-extract features (~6 min on 4 cores)
+# current best (v12):
+python run.py --no-cv --linear-only --clip-z 0 --shift-log10 0.15 --shift-coarse 0.35 \
+              --shift-fines 0.35 --shift-fines-coarse 0 --out ../submissions/submission_v12.csv
 ```
 On Kaggle, attach the competition data and run `run.py --root /kaggle/input/soil-grain-size-from-photos`
 (CPU only; no internet or pretrained weights needed).
 
 ## Submission log
 
+All files live in `submissions/`; every one is reproduced byte-for-byte by the command in its row.
+
 | # | file | change | LOSO EMD | public LB |
 |---|---|---|---|---|
-| 1 | `submission.csv` | ensemble as described above | 35.9 | 55.19 |
+| 1 | `submission_v1.csv` | ensemble as described above | 35.9 | 55.19 |
 | 2 | `submission_v2.csv` | `python run.py --range-margin 0.25`: only features whose test-sample values stay within the train range (+25 %) | 35.9 | 61.09 (worse) |
 | 3 | `submission_v3.csv` | `python run.py --linear-only`: v1 without the kNN-median parts, which cannot predict coarser than the coarsest training soil | 38.8 | **40.90** (best) |
 | 4 | `submission_v4.csv` | `python run.py --linear-only --clip-z 0`: v3 without the ±3.5σ feature clipping; only Münster changes (D50 12.5 → 18 mm; Kleinkummerfeld 2-2 moves 0.6) | 38.8 | **38.75** |

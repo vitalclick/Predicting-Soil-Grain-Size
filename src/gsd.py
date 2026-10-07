@@ -77,8 +77,8 @@ def logq_to_curve(logq, p=P_GRID):
 # ---- data discovery -----------------------------------------------------------------------
 def find_root(start=None):
     here = os.path.dirname(os.path.abspath(__file__))
-    cands = [start, os.path.join(here, "..", "soil-grain-size-from-photos"),
-             "/kaggle/input/soil-grain-size-from-photos", "soil-grain-size-from-photos"]
+    cands = [start, os.path.join(here, "..", "data"),
+             "/kaggle/input/soil-grain-size-from-photos", "data"]
     for c in cands:
         if c and os.path.exists(os.path.join(c, "Training_labels_updated.csv")):
             return os.path.abspath(c)

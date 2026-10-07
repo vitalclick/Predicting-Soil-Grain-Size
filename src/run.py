@@ -2,7 +2,7 @@
 
     python run.py                      # uses cache/features.csv if present, else extracts (~6 min on 4 cores)
     python run.py --cv-only | --no-cv
-    python run.py --root /kaggle/input/soil-grain-size-from-photos --out submission.csv
+    python run.py --root /kaggle/input/soil-grain-size-from-photos --out submission.csv  # on Kaggle
 """
 import argparse
 import os
@@ -136,7 +136,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--root")
     ap.add_argument("--features", default=os.path.join(os.path.dirname(__file__), "..", "cache", "features.csv"))
-    ap.add_argument("--out", default="submission.csv")
+    ap.add_argument("--out", default=os.path.join(os.path.dirname(__file__), "..", "submissions", "submission.csv"))
     ap.add_argument("--n-aug", type=int, default=8)
     ap.add_argument("--range-margin", type=float, default=None,
                     help="drop features whose test values leave the train range by more than this fraction")
