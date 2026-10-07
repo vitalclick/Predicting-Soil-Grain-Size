@@ -106,11 +106,15 @@ On Kaggle, attach the competition data and run `run.py --root /kaggle/input/soil
 | 8 | `submission_v8.csv` | `--shift-log10 0.15 --shift-fines 0.2`: v5 + fewer fines (extra shift ramping in below the median) | – | **32.50** |
 | 9 | `submission_v9.csv` | `--shift-log10 0.15 --shift-coarse 0.25`: sandy rows = v5, Münster/Lidl rows = v6 | – | **34.54** (as predicted) |
 | 10 | `submission_v10.csv` | `--shift-log10 0.15 --shift-coarse 0.35`: Münster/Lidl pushed one step further | – | **33.76** |
-| 11 | `submission_v11.csv` | `--shift-log10 0.15 --shift-coarse 0.35 --shift-fines 0.2 --shift-fines-coarse 0`: sandy rows = v8, Münster/Lidl rows = v10 | – | expected ≈ 30.9 − f_c |
-| 12 | `submission_v12.csv` | v11 with sandy fines shift 0.35 (sandy rows only change) | – | _pending_ |
-| 13 | `submission_v13.csv` | v11 with Münster/Lidl +0.45 (coarse rows only change) | – | _pending_ |
+| 11 | `submission_v11.csv` | `--shift-log10 0.15 --shift-coarse 0.35 --shift-fines 0.2 --shift-fines-coarse 0`: sandy rows = v8, Münster/Lidl rows = v10 | – | 32.50 |
+| 12 | `submission_v12.csv` | v11 with sandy fines shift 0.35 (sandy rows only change) | – | **31.47** (best) |
+| 13 | `submission_v13.csv` | v11 with Münster/Lidl +0.45 (coarse rows only change) | – | 32.72 |
+| 14 | `submission_v14.csv` | v12 with sandy fines shift 0.5 (sandy rows only change) | – | _pending_ |
+| 15 | `submission_v15.csv` | v12 with Münster/Lidl fines shift 0.2 on top of +0.35 (coarse rows only change) | – | _pending_ |
+| 16 | `submission_v16.csv` | sandy rows = v14, Münster/Lidl rows = v15 | – | exactly v14 + v15 − v12 |
 
-Group effects measured so far (public split, exact by additivity): Münster/Lidl +0.15→+0.25: −0.79, +0.25→+0.35: −0.78;
+Group effects measured (exact, public split): sandy fines 0→0.2: −1.27, 0.2→0.35: −1.04; Münster/Lidl fines 0→0.2 (at +0.15):
+−1.57; Münster/Lidl +0.35→+0.45: +0.22 (overshoot). Earlier notes — (public split, exact by additivity): Münster/Lidl +0.15→+0.25: −0.79, +0.25→+0.35: −0.78;
 sandy +0.15→+0.25: +0.99; fines-tail 0.2 on all samples: −2.83 (= sandy part f_s + coarse part f_c, not yet separated;
 v11 − (v5 + v10 − v9 ... ) separates it: f_c = 30.93 − v11).
 
