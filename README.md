@@ -136,7 +136,7 @@ All files live in `submissions/`; every one is reproduced byte-for-byte by the c
 | 17 | `submission_v17.csv` | v16 with Münster/Lidl fines shift 0.35 (coarse rows only change) | – | 29.34 |
 | 18 | `submission_v18.csv` | v16 with sandy fines shift 0.65 (sandy rows only change) | – | 29.54 |
 | 19 | `submission_v19.csv` | sandy rows = v18, Münster/Lidl rows = v17 | – | **29.23** (as predicted) |
-| 20 | `submission_v20.csv` | v19 with sandy base shift +0.10 instead of +0.15 (sandy rows only change) | – | _pending_ |
+| 20 | `submission_v20.csv` | `… --contract-upper 0.55 --contract-upper-coarse 1.0`: v19 with the coarse half of each **sandy** quantile function contracted toward its median (q90−q50: 0.89 → 0.57, matching the well-sorted training sands). Münster/Lidl unchanged | – | _pending_ |
 
 Group effects measured (exact, public split): sandy fines 0→0.2: −1.27, 0.2→0.35: −1.04; Münster/Lidl fines 0→0.2 (at +0.15):
 −1.57; Münster/Lidl +0.35→+0.45: +0.22 (overshoot); sandy fines 0.35→0.5: −0.39 (flattening); Münster/Lidl fines
@@ -157,6 +157,18 @@ systematically under-predicts grain size on the iPhone/field test photos. v5 add
 v1 scored far worse than CV (camera/site shift). v2 tested the hypothesis that shifted features are the cause: it
 scored **worse** (61.09 vs 55.19), so range-filtering hurt. Side effect that likely explains it: the filter removes coarse-scale features, so the coarse Münster sample is predicted finer than in v1
 (EMD v1↔v2 = 33 on that sample, 15 on Audorfring, 11 on Lidl; ≤6 elsewhere).
+
+### Why the tuning plateaued (reassessment after v19)
+
+The linear model cannot predict **sorting**: LOSO correlation between true and predicted spread (q90−q10) is 0.11, and no
+feature set predicts spread better than its mean (best LOSO corr 0.29). Every sample therefore gets the training-average
+width (~2 decades). With the true D50 but that fixed width, LOSO EMD would be 19.4; with the true width as well, 10.0 — so
+once the leaderboard tuning had fixed the location of the test curves, spread was the entire remaining error, and on a
+uniform sand it is worth ~28 EMD (H616). The leaderboard arithmetic says the same: moving the lower half of the sandy
+curves coarser gained, moving the whole curve coarser lost, so the **upper half was too coarse by a lot** (≈ +2.3 per 0.1
+decade). v19's sandy predictions had q90−q50 = 0.89 and q98−q50 = 1.56, versus 0.48 / 0.88 for the six best-sorted training
+sands; the lower side was already within the training range. v20 contracts the upper half (factor 0.55) to the training
+template. This is the first change since v3 that is motivated by the training data rather than fitted to the public split.
 
 ## Ideas not yet tried
 
