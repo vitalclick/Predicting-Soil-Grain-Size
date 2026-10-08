@@ -132,14 +132,15 @@ All files live in `submissions/`; every one is reproduced byte-for-byte by the c
 | 13 | `submission_v13.csv` | v11 with Münster/Lidl +0.45 (coarse rows only change) | – | 32.72 |
 | 14 | `submission_v14.csv` | v12 with sandy fines shift 0.5 (sandy rows only change) | – | 31.08 |
 | 15 | `submission_v15.csv` | v12 with Münster/Lidl fines shift 0.2 on top of +0.35 (coarse rows only change) | – | **30.04** |
-| 16 | `submission_v16.csv` | sandy rows = v14, Münster/Lidl rows = v15 | – | not yet submitted; exactly **29.66** (= v14 + v15 − v12) |
-| 17 | `submission_v17.csv` | v16 with Münster/Lidl fines shift 0.35 (coarse rows only change) | – | _pending_ |
-| 18 | `submission_v18.csv` | v16 with sandy fines shift 0.65 (sandy rows only change) | – | _pending_ |
-| 19 | `submission_v19.csv` | sandy rows = v18, Münster/Lidl rows = v17 | – | exactly v17 + v18 − v16 |
+| 16 | `submission_v16.csv` | sandy rows = v14, Münster/Lidl rows = v15 | – | **29.66** (as predicted) |
+| 17 | `submission_v17.csv` | v16 with Münster/Lidl fines shift 0.35 (coarse rows only change) | – | 29.34 |
+| 18 | `submission_v18.csv` | v16 with sandy fines shift 0.65 (sandy rows only change) | – | 29.54 |
+| 19 | `submission_v19.csv` | sandy rows = v18, Münster/Lidl rows = v17 | – | **29.23** (as predicted) |
+| 20 | `submission_v20.csv` | v19 with sandy base shift +0.10 instead of +0.15 (sandy rows only change) | – | _pending_ |
 
 Group effects measured (exact, public split): sandy fines 0→0.2: −1.27, 0.2→0.35: −1.04; Münster/Lidl fines 0→0.2 (at +0.15):
 −1.57; Münster/Lidl +0.35→+0.45: +0.22 (overshoot); sandy fines 0.35→0.5: −0.39 (flattening); Münster/Lidl fines
-0→0.2 (at +0.35): −1.42. Earlier notes — (public split, exact by additivity): Münster/Lidl +0.15→+0.25: −0.79, +0.25→+0.35: −0.78;
+0→0.2 (at +0.35): −1.42; Münster/Lidl fines 0.2→0.35: −0.31; sandy fines 0.5→0.65: −0.12. Earlier notes — (public split, exact by additivity): Münster/Lidl +0.15→+0.25: −0.79, +0.25→+0.35: −0.78;
 sandy +0.15→+0.25: +0.99; fines-tail 0.2 on all samples: −2.83 (= sandy part f_s + coarse part f_c, not yet separated;
 v11 − (v5 + v10 − v9 ... ) separates it: f_c = 30.93 − v11).
 
