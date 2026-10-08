@@ -147,6 +147,8 @@ def main():
     ap.add_argument("--shift-coarse", type=float, default=None, help="shift for samples with predicted D50 > 1 mm")
     ap.add_argument("--shift-fines", type=float, default=0.0, help="extra coarsening of the fine tail (p<50)")
     ap.add_argument("--shift-fines-coarse", type=float, default=None, help="fine-tail shift for D50 > 1 mm samples")
+    ap.add_argument("--contract-upper", type=float, default=1.0, help="factor on (q(p)-q50) for p>50, sandy samples")
+    ap.add_argument("--contract-upper-coarse", type=float, default=None, help="same for D50 > 1 mm samples (default: as sandy)")
     ap.add_argument("--linear-only", action="store_true", help="PLS-1 components only (extrapolating)")
     ap.add_argument("--cv-only", action="store_true")
     ap.add_argument("--no-cv", action="store_true")
@@ -175,7 +177,7 @@ def main():
         return
     tr, te = F[F.split == "train"], F[F.split == "test"]
     idx, comp_c, ens = fit_predict(tr, te, Ylq, cols)
-    if a.shift_log10 or a.shift_fines or a.shift_coarse is not None:
+    if a.shift_log10 or a.shift_fines or a.shift_coarse is not None or a.contract_upper != 1.0:
         lq = gsd.curve_to_logq(ens)
         shift = np.full(len(lq), a.shift_log10)
         if a.shift_coarse is not None:  # separate shift for samples predicted gravelly (D50 > 1 mm)
@@ -185,7 +187,17 @@ def main():
         if a.shift_fines_coarse is not None:
             fines[lq[:, 50] > 0.0] = a.shift_fines_coarse
         ramp = np.clip((50 - gsd.P_GRID) / 50, 0, 1)
-        ens = gsd.logq_to_curve(lq + shift[:, None] + fines[:, None] * ramp[None, :])
+        lq = lq + shift[:, None] + fines[:, None] * ramp[None, :]
+        # Sorting correction: the linear model cannot predict spread (LOSO corr 0.11) and gives every
+        # sample the training-average width. Contract the coarse half of the quantile function toward
+        # the median by a factor (1 = unchanged); sized on the well-sorted training sands.
+        contr = np.full(len(lq), a.contract_upper)
+        if a.contract_upper_coarse is not None:
+            contr[lq[:, 50] > 0.0] = a.contract_upper_coarse
+        up = gsd.P_GRID > 50
+        q50 = lq[:, [np.argmin(np.abs(gsd.P_GRID - 50))]]
+        lq[:, up] = q50 + contr[:, None] * (lq[:, up] - q50)
+        ens = gsd.logq_to_curve(lq)
     sub = pd.DataFrame(ens, index=idx, columns=gsd.COLS).round(4)
     tmpl = pd.read_csv(f"{root}/sample_submission.csv")
     sub = sub.loc[tmpl.sample_id].reset_index().rename(columns={"index": "sample_id", "sample_id": "sample_id"})
