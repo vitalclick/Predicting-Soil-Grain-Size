@@ -136,7 +136,8 @@ All files live in `submissions/`; every one is reproduced byte-for-byte by the c
 | 17 | `submission_v17.csv` | v16 with Münster/Lidl fines shift 0.35 (coarse rows only change) | – | 29.34 |
 | 18 | `submission_v18.csv` | v16 with sandy fines shift 0.65 (sandy rows only change) | – | 29.54 |
 | 19 | `submission_v19.csv` | sandy rows = v18, Münster/Lidl rows = v17 | – | **29.23** (as predicted) |
-| 20 | `submission_v20.csv` | `… --contract-upper 0.55 --contract-upper-coarse 1.0`: v19 with the coarse half of each **sandy** quantile function contracted toward its median (q90−q50: 0.89 → 0.57, matching the well-sorted training sands). Münster/Lidl unchanged | – | _pending_ |
+| 20 | `submission_v20.csv` | `… --contract-upper 0.55 --contract-upper-coarse 1.0`: v19 with the coarse half of each **sandy** quantile function contracted toward its median (q90−q50: 0.89 → 0.57, matching the well-sorted training sands). Münster/Lidl unchanged | – | 32.15 (worse by 2.92) |
+| 21 | `submission_v21.csv` | as v20 with contraction 0.85 instead of 0.55 (one third of the way from v19 to v20) | – | _pending_ |
 
 Group effects measured (exact, public split): sandy fines 0→0.2: −1.27, 0.2→0.35: −1.04; Münster/Lidl fines 0→0.2 (at +0.15):
 −1.57; Münster/Lidl +0.35→+0.45: +0.22 (overshoot); sandy fines 0.35→0.5: −0.39 (flattening); Münster/Lidl fines
@@ -169,6 +170,9 @@ curves coarser gained, moving the whole curve coarser lost, so the **upper half 
 decade). v19's sandy predictions had q90−q50 = 0.89 and q98−q50 = 1.56, versus 0.48 / 0.88 for the six best-sorted training
 sands; the lower side was already within the training range. v20 contracts the upper half (factor 0.55) to the training
 template. This is the first change since v3 that is motivated by the training data rather than fitted to the public split.
+**Result: 32.15, worse by 2.92.** The move was ~13 EMD per sandy sample, so the loss is about a quarter of the distance moved: the
+public sands' upper tails are narrower than v19 but only by roughly a third of the contraction (s ≈ 0.85), or the samples
+disagree with each other. The training-sand template does not transfer to the test sands as directly as assumed.
 
 ## Ideas not yet tried
 
