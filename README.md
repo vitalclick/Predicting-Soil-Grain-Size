@@ -137,7 +137,9 @@ All files live in `submissions/`; every one is reproduced byte-for-byte by the c
 | 18 | `submission_v18.csv` | v16 with sandy fines shift 0.65 (sandy rows only change) | – | 29.54 |
 | 19 | `submission_v19.csv` | sandy rows = v18, Münster/Lidl rows = v17 | – | **29.23** (as predicted) |
 | 20 | `submission_v20.csv` | `… --contract-upper 0.55 --contract-upper-coarse 1.0`: v19 with the coarse half of each **sandy** quantile function contracted toward its median (q90−q50: 0.89 → 0.57, matching the well-sorted training sands). Münster/Lidl unchanged | – | 32.15 (worse by 2.92) |
-| 21 | `submission_v21.csv` | as v20 with contraction 0.85 instead of 0.55 (one third of the way from v19 to v20) | – | _pending_ |
+| 21 | `submission_v21.csv` | as v20 with contraction 0.85 instead of 0.55 (one third of the way from v19 to v20) | – | 29.40 |
+| 22 | `submission_v22.csv` | `… --homogenize-sandy 1.0`: every sandy sample gets the group-median location (D50 ≈ 0.16 mm), shape unchanged | – | _pending_ |
+| 23 | `submission_v23.csv` | `… --homogenize-sandy 0.5`: sandy locations shrunk half-way toward the group median | – | _pending_ |
 
 Group effects measured (exact, public split): sandy fines 0→0.2: −1.27, 0.2→0.35: −1.04; Münster/Lidl fines 0→0.2 (at +0.15):
 −1.57; Münster/Lidl +0.35→+0.45: +0.22 (overshoot); sandy fines 0.35→0.5: −0.39 (flattening); Münster/Lidl fines
@@ -173,6 +175,20 @@ template. This is the first change since v3 that is motivated by the training da
 **Result: 32.15, worse by 2.92.** The move was ~13 EMD per sandy sample, so the loss is about a quarter of the distance moved: the
 public sands' upper tails are narrower than v19 but only by roughly a third of the contraction (s ≈ 0.85), or the samples
 disagree with each other. The training-sand template does not transfer to the test sands as directly as assumed.
+
+### Direct granulometry (`src/granulometry.py`) — tried, does not validate
+
+Grey-scale openings/closings at physical radii on the native-resolution photos (iPhone 14–20 px/mm). On the training
+set the modal structure size sits at the resolution floor for 22/24 samples, and within the 12 gravelly samples the
+resolved-range image-D50 / D90 correlate with the sieve D50 / D90 at ρ = 0.27 / −0.41: bright-blob size on these photos
+is set by lighting and touching grains, not by grain outlines. Not usable as a size estimator. It did show that the eight
+sandy test samples measure almost identically at full resolution, which prompted the test below.
+
+### Within-group location is noise → homogenise (v22/v23)
+
+LOSO on the 12 fine training samples: Spearman(true D50, predicted D50) = −0.22. Replacing every fine sample's location
+with the group median improves LOSO EMD 41.8 → 39.5 (k = 0.5 shrink: 39.7; bootstrap 10–90 % of the gain −1.3 … +5.5).
+v19 spreads the sandy test samples over a decade (0.05–0.43 mm); v22/v23 pull them toward 0.16 mm.
 
 ## Ideas not yet tried
 

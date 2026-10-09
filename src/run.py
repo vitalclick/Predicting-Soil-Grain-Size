@@ -149,6 +149,8 @@ def main():
     ap.add_argument("--shift-fines-coarse", type=float, default=None, help="fine-tail shift for D50 > 1 mm samples")
     ap.add_argument("--contract-upper", type=float, default=1.0, help="factor on (q(p)-q50) for p>50, sandy samples")
     ap.add_argument("--contract-upper-coarse", type=float, default=None, help="same for D50 > 1 mm samples (default: as sandy)")
+    ap.add_argument("--homogenize-sandy", type=float, default=0.0,
+                    help="shrink each D50<=1mm sample's location toward the group median by this fraction (1 = median)")
     ap.add_argument("--linear-only", action="store_true", help="PLS-1 components only (extrapolating)")
     ap.add_argument("--cv-only", action="store_true")
     ap.add_argument("--no-cv", action="store_true")
@@ -197,6 +199,10 @@ def main():
         up = gsd.P_GRID > 50
         q50 = lq[:, [np.argmin(np.abs(gsd.P_GRID - 50))]]
         lq[:, up] = q50 + contr[:, None] * (lq[:, up] - q50)
+        if a.homogenize_sandy:  # within-group location is noise in LOSO: use the group median (L1-optimal)
+            sandy = lq[:, 50] <= 0.0
+            q50 = lq[:, np.argmin(np.abs(gsd.P_GRID - 50))]
+            lq[sandy] += a.homogenize_sandy * (np.median(q50[sandy]) - q50[sandy])[:, None]
         ens = gsd.logq_to_curve(lq)
     sub = pd.DataFrame(ens, index=idx, columns=gsd.COLS).round(4)
     tmpl = pd.read_csv(f"{root}/sample_submission.csv")
