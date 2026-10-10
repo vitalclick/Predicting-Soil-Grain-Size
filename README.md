@@ -147,6 +147,10 @@ All files live in `submissions/`; every one is reproduced byte-for-byte by the c
 | 28 | `submission_v28.csv` | v26 with sandy base shift +0.10 (was +0.15); sandy rows only | – | 24.82 (worse) |
 | 29 | `submission_v29.csv` | v26 with sandy base shift +0.20; sandy rows only | – | **22.72** (best) |
 | 30 | `submission_v30.csv` | v26 with sandy base shift +0.25 | – | _not submitted_: convexity caps its gain at 0.17 |
+| 31 | `submission_v31.csv` | v29 with Münster/Lidl fines shift 0.5 (was 0.35); coarse rows only | – | _pending_ |
+| 32 | `submission_v32.csv` | v29 with sandy fines shift 0.8 (was 0.65); sandy rows only | – | _pending_ |
+| 33 | `submission_v33.csv` | v29 with sandy fines shift 0.5; sandy rows only (only if v32 loses) | – | _pending_ |
+| 34 | `submission_v34.csv` | sandy rows = v32, Münster/Lidl rows = v31 (only if both win) | – | exactly v31 + v32 − v29 |
 
 The score is convex in the location-shrink factor k; with k = 0 / 0.5 / 0.65 / 1 → 29.23 / 23.88 / 23.25 / 25.62 the
 minimum is bounded at ≈ 23.25 near k = 0.65, so k is settled. Training LOSO (fine group): shape homogenisation on top of
