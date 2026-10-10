@@ -144,8 +144,9 @@ All files live in `submissions/`; every one is reproduced byte-for-byte by the c
 | 25 | `submission_v25.csv` | `… --homogenize-sandy 0.65`: estimated optimum from v19/v23/v22 (score is convex in k) | – | **23.25** (best) |
 | 26 | `submission_v26.csv` | v25 + `--homogenize-shape 1.0`: sandy samples also get the group-median shape around their median | – | **22.89** (best) |
 | 27 | `submission_v27.csv` | v25 + `--homogenize-shape 0.5` (half-way) | – | _not submitted_ |
-| 28 | `submission_v28.csv` | v26 with sandy base shift +0.10 (was +0.15); sandy rows only | – | _pending_ |
-| 29 | `submission_v29.csv` | v26 with sandy base shift +0.20; sandy rows only | – | _pending_ |
+| 28 | `submission_v28.csv` | v26 with sandy base shift +0.10 (was +0.15); sandy rows only | – | 24.82 (worse) |
+| 29 | `submission_v29.csv` | v26 with sandy base shift +0.20; sandy rows only | – | _pending_ (convexity: ≥ 20.95) |
+| 30 | `submission_v30.csv` | v26 with sandy base shift +0.25 (only if v29 beats v26) | – | _pending_ |
 
 The score is convex in the location-shrink factor k; with k = 0 / 0.5 / 0.65 / 1 → 29.23 / 23.88 / 23.25 / 25.62 the
 minimum is bounded at ≈ 23.25 near k = 0.65, so k is settled. Training LOSO (fine group): shape homogenisation on top of
