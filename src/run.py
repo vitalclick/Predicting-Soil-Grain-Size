@@ -151,6 +151,8 @@ def main():
     ap.add_argument("--contract-upper-coarse", type=float, default=None, help="same for D50 > 1 mm samples (default: as sandy)")
     ap.add_argument("--homogenize-sandy", type=float, default=0.0,
                     help="shrink each D50<=1mm sample's location toward the group median by this fraction (1 = median)")
+    ap.add_argument("--homogenize-shape", type=float, default=0.0,
+                    help="shrink each D50<=1mm sample's shape (curve minus its median) toward the group-median shape")
     ap.add_argument("--linear-only", action="store_true", help="PLS-1 components only (extrapolating)")
     ap.add_argument("--cv-only", action="store_true")
     ap.add_argument("--no-cv", action="store_true")
@@ -203,6 +205,11 @@ def main():
             sandy = lq[:, 50] <= 0.0
             q50 = lq[:, np.argmin(np.abs(gsd.P_GRID - 50))]
             lq[sandy] += a.homogenize_sandy * (np.median(q50[sandy]) - q50[sandy])[:, None]
+        if a.homogenize_shape:  # same for the shape around the median (training LOSO: also noise)
+            sandy = lq[:, 50] <= 0.0
+            i50 = np.argmin(np.abs(gsd.P_GRID - 50))
+            shape = lq[sandy] - lq[sandy][:, [i50]]
+            lq[sandy] += a.homogenize_shape * (np.median(shape, axis=0) - shape)
         ens = gsd.logq_to_curve(lq)
     sub = pd.DataFrame(ens, index=idx, columns=gsd.COLS).round(4)
     tmpl = pd.read_csv(f"{root}/sample_submission.csv")
