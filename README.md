@@ -138,9 +138,10 @@ All files live in `submissions/`; every one is reproduced byte-for-byte by the c
 | 19 | `submission_v19.csv` | sandy rows = v18, Münster/Lidl rows = v17 | – | **29.23** (as predicted) |
 | 20 | `submission_v20.csv` | `… --contract-upper 0.55 --contract-upper-coarse 1.0`: v19 with the coarse half of each **sandy** quantile function contracted toward its median (q90−q50: 0.89 → 0.57, matching the well-sorted training sands). Münster/Lidl unchanged | – | 32.15 (worse by 2.92) |
 | 21 | `submission_v21.csv` | as v20 with contraction 0.85 instead of 0.55 (one third of the way from v19 to v20) | – | 29.40 |
-| 22 | `submission_v22.csv` | `… --homogenize-sandy 1.0`: every sandy sample gets the group-median location (D50 ≈ 0.16 mm), shape unchanged | – | _pending_ |
+| 22 | `submission_v22.csv` | `… --homogenize-sandy 1.0`: every sandy sample gets the group-median location (D50 ≈ 0.16 mm), shape unchanged | – | 25.62 (overshoot) |
 | 23 | `submission_v23.csv` | `… --homogenize-sandy 0.5`: sandy locations shrunk half-way toward the group median | – | **23.88** (best, −5.35) |
-| 24 | `submission_v24.csv` | `… --homogenize-sandy 0.75` (fallback between v23 and v22) | – | _pending_ |
+| 24 | `submission_v24.csv` | `… --homogenize-sandy 0.75` (between v23 and v22) | – | _not submitted_ |
+| 25 | `submission_v25.csv` | `… --homogenize-sandy 0.65`: estimated optimum from v19/v23/v22 (score is convex in k) | – | _pending_ (est. ~22.3) |
 
 Group effects measured (exact, public split): sandy fines 0→0.2: −1.27, 0.2→0.35: −1.04; Münster/Lidl fines 0→0.2 (at +0.15):
 −1.57; Münster/Lidl +0.35→+0.45: +0.22 (overshoot); sandy fines 0.35→0.5: −0.39 (flattening); Münster/Lidl fines
