@@ -212,10 +212,12 @@ LOSO on the 12 fine training samples: Spearman(true D50, predicted D50) = −0.2
 with the group median improves LOSO EMD 41.8 → 39.5 (k = 0.5 shrink: 39.7; bootstrap 10–90 % of the gain −1.3 … +5.5).
 v19 spreads the sandy test samples over a decade (0.05–0.43 mm); v22/v23 pull them toward 0.16 mm.
 
-## Ideas not yet tried
+## Ideas: status
 
-* Pretrained embeddings (DINOv2 / ConvNeXt) as extra latent features – public notebooks with them score ~35–41 OOF, no
-  better; needs internet/models (not available in the dev sandbox).
-* Instance segmentation of stones (SAM / watershed) to measure coarse-fraction diameters directly in mm.
-* Test-time adaptation: standardise iPhone features with unlabeled test statistics; per-phone feature alignment.
-* Reduce variance of the tail: Bayesian shrinkage of predictions towards a site-type prior.
+| idea | status |
+|---|---|
+| Bayesian shrinkage toward a group prior | **Done** (v23–v26): sandy locations and shapes pooled toward the group median, the largest validated gain (29.23 → 22.89). |
+| Test-time adaptation with unlabeled test statistics | **Tried** (v2): keeping only features whose test values stay in the training range scored worse (61.09 vs 55.19). |
+| Direct size measurement from the photos | **Tried** (`src/granulometry.py`): grey-scale granulometry does not track sieve sizes on the training set (ρ ≈ 0.3 for gravels). |
+| Instance segmentation of stones (SAM / watershed) | Not tried. Would only help the coarse fraction (Münster, Lidl); granulometry suggests lighting, not grain outlines, dominates these photos. |
+| Pretrained embeddings (DINOv2 / ConvNeXt) | Not tried here (no model downloads in the dev sandbox). Public notebooks report ~35–41 LOSO, no better than ours. The open question is whether they rank the **sandy** samples better than our features (LOSO Spearman −0.22). Testable on Kaggle with internet on. |
