@@ -156,6 +156,9 @@ All files live in `submissions/`; every one is reproduced byte-for-byte by the c
 
 **Final model: v31 (public 22.31).** Every dial has now been tested on both sides of its current value. Final selection: v31 + v19 (hedge).
 
+Leaderboard probing (reconstructing the public labels from scores) was considered and deliberately not used: the rules
+(section 7a) rank prizes on the Private Leaderboard only, and probing risks disqualification under the fair-play clause.
+
 The score is convex in the location-shrink factor k; with k = 0 / 0.5 / 0.65 / 1 → 29.23 / 23.88 / 23.25 / 25.62 the
 minimum is bounded at ≈ 23.25 near k = 0.65, so k is settled. Training LOSO (fine group): shape homogenisation on top of
 k = 0.65 gives a further +0.6 (k_shape = 1) / +0.3 (0.5); for coarse samples shape homogenisation hurts.
