@@ -151,7 +151,7 @@ All files live in `submissions/`; every one is reproduced byte-for-byte by the c
 | 32 | `submission_v32.csv` | v29 with sandy fines shift 0.8 (was 0.65); sandy rows only | – | 22.90 (worse) |
 | 33 | `submission_v33.csv` | v29 with sandy fines shift 0.5; sandy rows only | – | 23.19 (worse) → sandy fines 0.65 is optimal |
 | 34 | `submission_v34.csv` | sandy rows = v32, Münster/Lidl rows = v31 (only if both win) | – | _not needed_ (v32 lost) |
-| 35 | `submission_v35.csv` | v31 with Münster/Lidl fines shift 0.65; coarse rows only | – | _pending_ |
+| 35 | `submission_v35.csv` | v31 with Münster/Lidl fines shift 0.65; coarse rows only | – | 22.36 (worse by 0.05) → 0.5 is optimal |
 | 36 | `submission_v36.csv` | v31 with Münster/Lidl base shift +0.40 (was +0.35); coarse rows only | – | _pending_ |
 
 The score is convex in the location-shrink factor k; with k = 0 / 0.5 / 0.65 / 1 → 29.23 / 23.88 / 23.25 / 25.62 the
