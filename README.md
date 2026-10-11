@@ -152,7 +152,9 @@ All files live in `submissions/`; every one is reproduced byte-for-byte by the c
 | 33 | `submission_v33.csv` | v29 with sandy fines shift 0.5; sandy rows only | – | 23.19 (worse) → sandy fines 0.65 is optimal |
 | 34 | `submission_v34.csv` | sandy rows = v32, Münster/Lidl rows = v31 (only if both win) | – | _not needed_ (v32 lost) |
 | 35 | `submission_v35.csv` | v31 with Münster/Lidl fines shift 0.65; coarse rows only | – | 22.36 (worse by 0.05) → 0.5 is optimal |
-| 36 | `submission_v36.csv` | v31 with Münster/Lidl base shift +0.40 (was +0.35); coarse rows only | – | _pending_ |
+| 36 | `submission_v36.csv` | v31 with Münster/Lidl base shift +0.40 (was +0.35); coarse rows only | – | 22.89 (worse by 0.57) |
+
+**Final model: v31 (public 22.31).** Every dial has now been tested on both sides of its current value. Final selection: v31 + v19 (hedge).
 
 The score is convex in the location-shrink factor k; with k = 0 / 0.5 / 0.65 / 1 → 29.23 / 23.88 / 23.25 / 25.62 the
 minimum is bounded at ≈ 23.25 near k = 0.65, so k is settled. Training LOSO (fine group): shape homogenisation on top of
